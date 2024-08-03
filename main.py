@@ -53,13 +53,29 @@ def main():
             #Moving file to a directory based on its file extension
             for directory in directories:
                 if extension in ext[directory]:
-                    filepath.rename((cwd / directory / file))
+                    try:
+                        filepath.rename((cwd / directory / file))
+                    except FileExistsError:
+                        file = file.split(".")
+                        file[-2] = file[-2] + "copy."
+                        file = "".join(file)
+                        filepath.rename((cwd / directory / file))
                     break
             else:
-                filepath.rename((cwd / "other" / file))
+                try:
+                    filepath.rename((cwd / "other" / file))
+                except FileExistsError:
+                    file = file.split(".")
+                    file[-2] = file[-2] + "copy."
+                    file = "".join(file)
+                    filepath.rename((cwd / "other" / file))
         #Moving directories to "directories" but skipping the ones created by the program
         elif file not in direcotryLookup:
-            filepath.rename((cwd / "directories" / file))
+            try:
+                filepath.rename((cwd / "directories" / file))
+            except FileExistsError:
+                file += "copy"
+                filepath.rename((cwd / "directories" / file))
 
 
 if __name__ == "__main__":
